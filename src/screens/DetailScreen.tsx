@@ -119,9 +119,6 @@ const styles = StyleSheet.create({
   favActive: {
       backgroundColor: COLORS.primary,
   },
-  favActive: {
-      backgroundColor: COLORS.primary,
-  },
   favIcon: {
       color: COLORS.text,
       fontSize: 20,

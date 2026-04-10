@@ -1,3 +1,5 @@
+import React from 'react';
+import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FavoritesScreen = ({navigation}: any) => {
