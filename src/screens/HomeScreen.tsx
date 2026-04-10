@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useCallback} from 'react';
+import React, {useEffect, useRef, useCallback} from 'react';
 import {
   View,
   StyleSheet,
@@ -28,7 +28,7 @@ const HomeScreen = ({navigation}: any) => {
     if (items.length === 0 && !query) {
       dispatch(fetchProducts({limit: 10, skip: 0}));
     }
-  }, []);
+  }, [dispatch]);
 
   // Pull to Refresh Handler
   const onRefresh = useCallback(() => {
@@ -40,14 +40,14 @@ const HomeScreen = ({navigation}: any) => {
   }, [dispatch]);
 
   // Infinite Scroll Handler
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     if (!isLoading && items.length < total && !query) {
       dispatch(fetchProducts({limit: 10, skip}));
     }
-  };
+  }, [dispatch, isLoading, items.length, total, skip, query]);
 
   // Debounced Search Handler
-  const handleSearch = (text: string) => {
+  const handleSearch = useCallback((text: string) => {
     dispatch(setQuery(text));
     
     if (searchTimer.current) {
@@ -62,14 +62,18 @@ const HomeScreen = ({navigation}: any) => {
     searchTimer.current = setTimeout(() => {
       dispatch(searchProducts(text));
     }, 500);
-  };
+  }, [dispatch]);
 
-  const renderItem = ({item}: {item: any}) => (
+  const goToDetails = useCallback((item: any) => {
+    navigation.navigate('Details', {item});
+  }, [navigation]);
+
+  const renderItem = useCallback(({item}: {item: any}) => (
     <ProductCard 
         item={item} 
-        onPress={() => navigation.navigate('Details', {item})} 
+        onPress={() => goToDetails(item)} 
     />
-  );
+  ), [goToDetails]);
 
   const activeData = query.trim() !== '' ? results : items;
   const isInitialLoading = isLoading && skip === 0 && !isRefreshing;
@@ -105,21 +109,21 @@ const HomeScreen = ({navigation}: any) => {
             tintColor={COLORS.primary}
           />
         }
-        ListHeaderComponent={() => (
+        ListHeaderComponent={useCallback(() => (
            isInitialLoading ? (
             <View>
                 {[1, 2, 3, 4, 5].map(i => <SkeletonLoader key={i} />)}
             </View>
            ) : null
-        )}
-        ListFooterComponent={() => 
+        ), [isInitialLoading])}
+        ListFooterComponent={useCallback(() => 
           isLoading && skip > 0 ? (
             <View style={styles.footerLoader}>
                 <SkeletonLoader />
             </View>
           ) : null
-        }
-        ListEmptyComponent={() => (
+        , [isLoading, skip])}
+        ListEmptyComponent={useCallback(() => (
             !isLoading && !isSearching && !isRefreshing ? (
                 <EmptyState 
                     title={error ? "Connection Error" : "No Results"} 
@@ -128,7 +132,7 @@ const HomeScreen = ({navigation}: any) => {
                     onAction={onRefresh}
                 />
             ) : null
-        )}
+        ), [isLoading, isSearching, isRefreshing, error, onRefresh])}
       />
     </View>
   );
