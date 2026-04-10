@@ -7,6 +7,7 @@ import {
   RefreshControl,
   StatusBar,
 } from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState, AppDispatch} from '../store/store';
 import {fetchProducts, resetData, setRefreshing} from '../store/dataSlice';
@@ -79,7 +80,7 @@ const HomeScreen = ({navigation}: any) => {
   const isInitialLoading = isLoading && skip === 0 && !isRefreshing;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       
       <View style={styles.header}>
@@ -134,7 +135,7 @@ const HomeScreen = ({navigation}: any) => {
             ) : null
         ), [isLoading, isSearching, isRefreshing, error, onRefresh])}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,9 +1,8 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FavoritesScreen = ({navigation}: any) => {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Favorites Screen</Text>
       <Text style={styles.emptyText}>You haven't saved any items yet.</Text>
       <TouchableOpacity
@@ -11,7 +10,7 @@ const FavoritesScreen = ({navigation}: any) => {
         onPress={() => navigation.goBack()}>
         <Text style={styles.buttonText}>Back to Home</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 

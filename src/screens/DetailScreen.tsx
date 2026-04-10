@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, StatusBar} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {COLORS, SPACING, RADIUS, SHADOW} from '../utils/theme';
 
 const DetailScreen = ({route, navigation}: any) => {
+  const insets = useSafeAreaInsets();
   const {item} = route.params || {};
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -24,12 +26,12 @@ const DetailScreen = ({route, navigation}: any) => {
         <View style={styles.imageContainer}>
             <Image source={{uri: item.images[0] || item.thumbnail}} style={styles.image} />
             <TouchableOpacity 
-                style={styles.backCircle} 
+                style={dynamicStyles.backCircle(insets.top)} 
                 onPress={() => navigation.goBack()}>
-                <Text style={styles.backIcon}>←</Text>
+                <Text style={dynamicStyles.backIcon}>←</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-                style={[styles.favCircle, isFavorite && styles.favActive]} 
+                style={[dynamicStyles.favCircle(insets.top), isFavorite && styles.favActive]} 
                 onPress={() => setIsFavorite(!isFavorite)}>
                 <Text style={[styles.favIcon, isFavorite && styles.favIconActive]}>♥</Text>
             </TouchableOpacity>
@@ -114,33 +116,8 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     opacity: 0.9,
   },
-  backCircle: {
-      position: 'absolute',
-      top: 50,
-      left: 20,
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: 'rgba(0,0,0,0.3)',
-      alignItems: 'center',
-      justifyContent: 'center',
-  },
-  backIcon: {
-      color: '#fff',
-      fontSize: 24,
-      fontWeight: 'bold',
-  },
-  favCircle: {
-    position: 'absolute',
-    top: 50,
-    right: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...SHADOW.small,
+  favActive: {
+      backgroundColor: COLORS.primary,
   },
   favActive: {
       backgroundColor: COLORS.primary,
@@ -290,5 +267,36 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
   }
 });
+
+const dynamicStyles = {
+  backCircle: (top: number) => ({
+      position: 'absolute',
+      top: top + SPACING.sm,
+      left: 20,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: 'rgba(0,0,0,0.3)',
+      alignItems: 'center',
+      justifyContent: 'center',
+  }),
+  backIcon: {
+      color: '#fff',
+      fontSize: 24,
+      fontWeight: 'bold',
+  },
+  favCircle: (top: number) => ({
+    position: 'absolute',
+    top: top + SPACING.sm,
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...SHADOW.small,
+  }),
+};
 
 export default DetailScreen;
